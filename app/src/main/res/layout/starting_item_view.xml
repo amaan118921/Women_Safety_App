@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background">
+    
+    <ImageView
+        android:id="@+id/ivIntro"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        tools:src="@drawable/intro"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="50dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv"
+        tools:text="@string/here_i_am_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/ivIntro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="60dp"
+        android:fontFamily="@font/regular"
+        android:textStyle="bold"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv"
+        android:layout_marginTop="25dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:fontFamily="@font/light"
+        android:gravity="center"
+        tools:text="@string/she_is_a_woman_a_mother_a_daughter_a_wife_n_and_a_sister_it_s_our_firm_duty_to_protect_women_of_our_society"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv1"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:fontFamily="@font/light"
+        android:gravity="center"
+        tools:text="@string/hence_we_have_developed_this_app_to_send_alert_to_our_loved_ones_in_case_of_emergency_harassment_etc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
