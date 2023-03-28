@@ -30,7 +30,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ContactsFragment : BaseFragment(), ContactAdapter.IListener, BottomSheetDialog.SBottom,
     TextWatcher {
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var adapter: ContactAdapter? = null
     private var job: Job? = null
     private var newJob: Job? = null
@@ -113,7 +112,7 @@ class ContactsFragment : BaseFragment(), ContactAdapter.IListener, BottomSheetDi
 
     override fun onYesClick() {
         contactModel?._id = Calendar.getInstance().timeInMillis.toString()
-        contactModel?.userId = auth.currentUser?.uid.toString()
+        contactModel?.userId = repo.getSharedPreferences(Constants.UID)
         contactModel?.let { viewModel.addContactToAlert(it, repo) }
         bottomSheetDialog.dismiss()
         popBackStack()
@@ -137,6 +136,7 @@ class ContactsFragment : BaseFragment(), ContactAdapter.IListener, BottomSheetDi
 
     private fun filterList(filter: String) {
         val list = arrayListOf<ContactModel>()
+        newJob?.cancel()
         newJob = lifecycleScope.launch(Dispatchers.Default) {
             for (contact: ContactModel in contactList) {
                 if (contact.name.contains(filter, true)) {

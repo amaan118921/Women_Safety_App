@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), PermissionHelper.IPermission {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         permissionHelper = PermissionHelper(this, this)
-        if(repo.getSharedPreferences(Constants.IS_LOGGED_IN)!="") {
+        if(repo.getSharedPreferences(Constants.LOCAL_PHONE)!="") {
             addFragment(Constants.HOME_FRAGMENT)
         }else {
             addFragment(Constants.STARTING_SCREEN)

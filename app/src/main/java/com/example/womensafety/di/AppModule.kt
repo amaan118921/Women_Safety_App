@@ -27,7 +27,8 @@ object AppModule {
     @Singleton
     fun provideApiService(): ApiService {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val retrofit = Retrofit.Builder().addConverterFactory(MoshiConverterFactory.create(moshi)).baseUrl(
+        val retrofit = Retrofit.Builder().addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(
             Constants.BASE_URL).build()
         return retrofit.create(ApiService::class.java)
     }

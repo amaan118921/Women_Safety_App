@@ -3,10 +3,9 @@ package com.example.womensafety.data.network
 import com.example.womensafety.helpers.Constants
 import com.example.womensafety.domain.models.ContactModel
 import com.example.womensafety.domain.models.Contacts
-import com.example.womensafety.domain.models.DataResponse
-import com.google.gson.Gson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

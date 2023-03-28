@@ -1,6 +1,7 @@
 package com.example.womensafety.core.utils
 
 import com.example.womensafety.core.ResultState
+import kotlinx.coroutines.Deferred
 import retrofit2.HttpException
 import retrofit2.Response
 import java.net.SocketTimeoutException

@@ -26,7 +26,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -94,11 +93,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, ContactAdapter.IListe
                     onSuccessListener(result.data)
                 }
                 is ResultState.Error -> {
-                    onFailureListener(result.message ?: "something, went wrong...")
+                    onFailureListener(result.message ?: "something, went wrong...", result.data)
                 }
-                is ResultState.Loading -> {
-                    onLoadingListener(result.data)
-                }
+                is ResultState.Loading -> {}
                 else ->{}
             }
         }
@@ -107,35 +104,40 @@ class HomeFragment : BaseFragment(), View.OnClickListener, ContactAdapter.IListe
                 is ResultState.Success -> {
                     onUpdateContactSuccess(result.data)
                 }
-                is ResultState.Loading -> {}
+                is ResultState.Loading -> {onUpdateLoading(result.data)}
                 is ResultState.Error -> {
                     onUpdateContactsFailure(result.message)
                 }
+                else -> {}
             }
         }
     }
 
+    private fun onUpdateLoading(data: ContactModel?) {
+        showProgressFrame()
+    }
+
     private fun onUpdateContactsFailure(message: String?) {
+        hideProgressFrame()
         showToast(message ?: "Couldn't add contact...")
     }
 
     private fun onUpdateContactSuccess(data: ContactModel?) {
-        if (data?.update?.compareTo(Constants.ADD) == 0) {
-            Utils.incrementCount(repo)
-        } else {
-            Utils.decrementCount(repo)
-        }
-
+        data?.let { if(it.update.compareTo(Constants.ADD)==0) Utils.incrementCount(repo)
+        else Utils.decrementCount(repo)}
         getAlertContacts()
     }
 
-    private fun onLoadingListener(data: List<ContactEntity>?) {
-        adapter?.bindList(data as MutableList<ContactEntity>)
-    }
-
-    private fun onFailureListener(message: String) {
-        showToast(message)
-        hideProgressFrame()
+    private fun onFailureListener(message: String, data: List<ContactEntity>?) {
+        val reqList = lifecycleScope.async(Dispatchers.Default) {
+            data?.map { it.toContactModel() }
+        }
+        runBlocking {
+            EventBus.getDefault().post(ContactEvent(Constants.GET_ALERT_CONTACTS, reqList.await()?: emptyList()))
+            adapter?.bindList(data as MutableList<ContactEntity>)
+            showToast(message)
+            hideProgressFrame()
+        }
     }
 
     private fun onSuccessListener(data: List<ContactEntity>?) {
@@ -212,7 +214,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, ContactAdapter.IListe
     }
 
     override fun onYesClick() {
-        contactModel?.let { viewModel.deleteContact(it._id, repo) }
+        contactModel?.let { viewModel.deleteContact(it._id) }
         bottomSheetDialog.dismiss()
     }
 

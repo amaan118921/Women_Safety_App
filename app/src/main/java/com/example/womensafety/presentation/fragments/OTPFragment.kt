@@ -15,8 +15,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_otp.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 @AndroidEntryPoint
-class OTPFragment: BaseFragment(), OTPListener {
+class OTPFragment : BaseFragment(), OTPListener {
     private lateinit var auth: FirebaseAuth
     private var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
     private var phone: String? = null
@@ -66,8 +67,14 @@ class OTPFragment: BaseFragment(), OTPListener {
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     showToast("Verified successfully")
-                    repo.setSharedPreferences(Constants.IS_LOGGED_IN, task.result.user?.uid?:Constants.IS_LOGGED_IN)
-                    toHomeFragment()
+                    if (task.result.user != null) {
+                        repo.setSharedPreferences(Constants.LOCAL_PHONE, phone!!)
+                        repo.setSharedPreferences(Constants.UID, task.result.user?.uid!!)
+                        toHomeFragment()
+                    } else {
+                        showToast("Entered OTP is incorrect, please try again...")
+                        popBackStack()
+                    }
                 } else {
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         showToast("Entered OTP is incorrect, please try again...")
@@ -104,8 +111,8 @@ class OTPFragment: BaseFragment(), OTPListener {
 //                } else if (e is FirebaseTooManyRequestsException) {
 //                    // The SMS quota for the project has been exceeded
 //                }
-                  showToast("Something went wrong, try again later...")
-                  popBackStack()
+                showToast("Something went wrong, try again later...")
+                popBackStack()
             }
 
             override fun onCodeSent(

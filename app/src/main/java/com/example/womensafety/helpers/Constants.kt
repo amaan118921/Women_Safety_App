@@ -16,6 +16,8 @@ class Constants {
         const val CONTACTS_REQUEST_CODE = 456669
         const val SMS_REQUEST_CODE = 456668
         const val PHONE = "PHONE"
+        const val UID = "UID"
+        const val LOCAL_PHONE = "LOCAL_PHONE"
         const val BASE_URL = "https://grumpy-ruby-seagull.cyclic.app/"
         const val LOCATION_CODE = 895311
         const val NOTIFICATION_ID = 45123

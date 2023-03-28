@@ -2,7 +2,7 @@ package com.example.womensafety.domain.repositories
 
 import com.example.womensafety.domain.models.ContactModel
 import com.example.womensafety.domain.models.Contacts
-import com.example.womensafety.domain.models.DataResponse
+import kotlinx.coroutines.Deferred
 import retrofit2.Response
 
 interface AppRepository {
