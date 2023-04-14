@@ -23,6 +23,7 @@
             android:launchMode="singleInstance"
             android:name=".presentation.activities.MainActivity"
             android:screenOrientation="locked"
+            android:configChanges="uiMode"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

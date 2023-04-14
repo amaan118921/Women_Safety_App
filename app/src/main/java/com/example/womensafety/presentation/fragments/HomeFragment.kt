@@ -22,6 +22,7 @@ import com.example.womensafety.presentation.viewModel.AppViewModel
 import com.example.womensafety.utils.Utils
 import com.example.womensafety.utils.makeGone
 import com.example.womensafety.utils.makeVisible
+import contacts.core.Contacts
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.Dispatchers
@@ -96,33 +97,61 @@ class HomeFragment : BaseFragment(), View.OnClickListener, ContactAdapter.IListe
                     onFailureListener(result.message ?: "something, went wrong...", result.data)
                 }
                 is ResultState.Loading -> {}
-                else ->{}
+                else -> {}
             }
         }
-        viewModel.getUpdateContact().observe(viewLifecycleOwner) { result ->
+        viewModel.getAddContact().observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ResultState.Success -> {
-                    onUpdateContactSuccess(result.data)
+                    onAddContactSuccess(result.data)
                 }
-                is ResultState.Loading -> {onUpdateLoading(result.data)}
+                is ResultState.Loading -> {onAddLoading(result.data)}
                 is ResultState.Error -> {
-                    onUpdateContactsFailure(result.message)
+                    onAddContactFailure(result.message)
+                }
+                else -> {}
+            }
+        }
+        viewModel.getDeleteContact().observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ResultState.Success -> {
+                    onDeleteContactSuccess(result.data)
+                }
+                is ResultState.Loading -> {onDeleteLoading(result.data)}
+                is ResultState.Error -> {
+                    onDeleteContactsFailure(result.message)
                 }
                 else -> {}
             }
         }
     }
 
-    private fun onUpdateLoading(data: ContactModel?) {
+    private fun onAddContactFailure(message: String?) {
+        hideProgressFrame()
+        showToast(message ?: "Couldn't update contact...")
+        getAlertContacts()
+    }
+
+    private fun onAddLoading(data: ContactModel?) {
         showProgressFrame()
     }
 
-    private fun onUpdateContactsFailure(message: String?) {
-        hideProgressFrame()
-        showToast(message ?: "Couldn't add contact...")
+    private fun onAddContactSuccess(data: ContactModel?) {
+        Utils.incrementCount(repo)
+        getAlertContacts()
     }
 
-    private fun onUpdateContactSuccess(data: ContactModel?) {
+    private fun onDeleteLoading(data: ContactModel?) {
+        showProgressFrame()
+    }
+
+    private fun onDeleteContactsFailure(message: String?) {
+        hideProgressFrame()
+        showToast(message ?: "Couldn't update contact...")
+        getAlertContacts()
+    }
+
+    private fun onDeleteContactSuccess(data: ContactModel?) {
         data?.let { if(it.update.compareTo(Constants.ADD)==0) Utils.incrementCount(repo)
         else Utils.decrementCount(repo)}
         getAlertContacts()
@@ -141,6 +170,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, ContactAdapter.IListe
     }
 
     private fun onSuccessListener(data: List<ContactEntity>?) {
+        updateSharedPref(data)
         showToast("Contacts fetched successfully")
         val reqList = lifecycleScope.async(Dispatchers.Default) {
             data?.map { it.toContactModel() }
@@ -150,6 +180,11 @@ class HomeFragment : BaseFragment(), View.OnClickListener, ContactAdapter.IListe
             adapter?.bindList(data as MutableList<ContactEntity>)
             hideProgressFrame()
         }
+    }
+
+    private fun updateSharedPref(data: List<ContactEntity>?) {
+        val size = data?.size
+        repo.setSharedPreferences(Constants.CONTACTS_LIMIT, size?.toString()?:"")
     }
 
     private fun setupRV() {

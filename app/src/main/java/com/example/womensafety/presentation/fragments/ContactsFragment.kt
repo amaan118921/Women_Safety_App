@@ -5,26 +5,29 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.womensafety.R
 import com.example.womensafety.data.room.enitities.ContactEntity
-import com.example.womensafety.presentation.adapters.ContactAdapter
+import com.example.womensafety.domain.models.ContactModel
+import com.example.womensafety.domain.models.toContactEntity
 import com.example.womensafety.helpers.BottomSheetDialog
 import com.example.womensafety.helpers.Constants
-import com.example.womensafety.domain.models.ContactModel
-import com.example.womensafety.domain.models.Contacts
-import com.example.womensafety.domain.models.toContactEntity
-import com.example.womensafety.utils.HelpRepo
-import com.example.womensafety.utils.Utils
+import com.example.womensafety.presentation.adapters.ContactAdapter
 import com.example.womensafety.presentation.viewModel.AppViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.example.womensafety.utils.HelpRepo
+import com.example.womensafety.utils.makeGone
+import contacts.core.Contacts
+import contacts.core.entities.Contact
+import contacts.core.util.phoneList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import kotlinx.coroutines.*
-import java.util.Calendar
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -51,10 +54,32 @@ class ContactsFragment : BaseFragment(), ContactAdapter.IListener, BottomSheetDi
             popBackStack()
         }
         setupRV()
-        getContacts()
+        getContactsWithReborn()
         etSearch.addTextChangedListener(this)
         ivBack.setOnClickListener {
             popBackStack()
+        }
+    }
+
+    private fun getContactsWithReborn() {
+        val contactList = arrayListOf<ContactModel>()
+        lifecycleScope.launch(Dispatchers.Default) {
+            val list = Contacts(requireContext()).query().find().sortedBy {
+                it.displayNamePrimary
+            }
+            for(cont: Contact in list) {
+                ContactModel().apply {
+                    name = cont.displayNamePrimary?:""
+                    if(cont.phoneList().isNotEmpty()) phone = cont.phoneList()[0].number?:""
+                    contactList.add(this)
+                }
+            }
+            val mappedList = contactList.map { it.toContactEntity() } as MutableList<ContactEntity>
+            withContext(Dispatchers.Main) {
+                this@ContactsFragment.contactList = contactList
+                adapter?.bindList(mappedList)
+                pfContacts.makeGone()
+            }
         }
     }
 

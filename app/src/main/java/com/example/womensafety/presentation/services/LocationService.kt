@@ -11,6 +11,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
@@ -139,7 +140,7 @@ class LocationService: Service(), SensorEventListener, PermissionHelper.IPermiss
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if(permissionHelper.isPermissionGranted(Manifest.permission.SEND_SMS, this)) sendAlert(location)
             }
-        }
+        }else Toast.makeText(this, "Location permission not granted...", Toast.LENGTH_SHORT).show()
     }
 
     private fun sendAlert(location: Location?) {

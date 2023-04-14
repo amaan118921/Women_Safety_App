@@ -9,7 +9,9 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class AddContactUseCase @Inject constructor(private val appRepository: AppRepository) {
 
     suspend operator fun invoke(contactModel: ContactModel): Flow<ResultState<ContactModel>> =

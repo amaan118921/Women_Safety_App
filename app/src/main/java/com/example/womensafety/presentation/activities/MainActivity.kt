@@ -110,12 +110,9 @@ class MainActivity : AppCompatActivity(), PermissionHelper.IPermission {
     }
 
     override fun onPermissionDenied(requestCode: Int, permission: String) {
-
     }
 
     override fun onPermissionDeniedPermanently(requestCode: Int, permission: String) {
     }
-
-
 
 }

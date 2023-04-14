@@ -70,6 +70,11 @@ dependencies {
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
+    //OK-HTTP
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+
+    //Reborn Contacts
+    implementation 'com.github.vestrel00:contacts-android:0.2.4'
 
     implementation 'com.squareup.moshi:moshi-kotlin:1.9.3'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'

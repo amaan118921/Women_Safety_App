@@ -3,7 +3,11 @@ package com.example.womensafety.domain.models
 import com.example.womensafety.data.room.enitities.ContactEntity
 
 data class ContactModel(
-    var name: String = "", var phone: String = "", var userId: String = "", var _id: String = "", var update: String = ""
+    var name: String = "",
+    var phone: String = "",
+    var userId: String = "",
+    var _id: String = "",
+    var update: String = ""
 )
 
 data class Contacts(

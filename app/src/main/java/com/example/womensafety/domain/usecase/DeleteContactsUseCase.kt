@@ -9,10 +9,12 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class DeleteContactsUseCase @Inject constructor(private val appRepository: AppRepository) {
 
-    suspend operator fun invoke(_id: String, uid: String): Flow<ResultState<ContactModel>> = flow {
+    operator fun invoke(_id: String, uid: String): Flow<ResultState<ContactModel>> = flow {
         try {
             emit(ResultState.Loading(null))
             val response = appRepository.deleteContact(_id, uid).body()
